@@ -1,0 +1,6 @@
+rootProject.name = "JennyVoiceAssistant"
+include ':app'
+include ':models'
+include ':wear'
+include ':aars'
+include ':app', ':pocketsphinx-android-5prealpha-release'

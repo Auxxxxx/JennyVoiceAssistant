@@ -1,0 +1,11 @@
+digits.gram
+menu.gram
+ru.dic
+ru_ptm_4000/feat.params
+ru_ptm_4000/mdef
+ru_ptm_4000/means
+ru_ptm_4000/mixture_weights
+ru_ptm_4000/noisedict
+ru_ptm_4000/sendump
+ru_ptm_4000/transition_matrices
+ru_ptm_4000/variances
