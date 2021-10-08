@@ -205,7 +205,7 @@ public class PocketSphinxActivity extends Activity implements
         recognizer.addKeyphraseSearch(KWS_SEARCH, KEYPHRASE);
 
         // Create grammar-based search for selection between demos
-        File menuGrammar = new File(assetsDir, "menu.gram");
+        File menuGrammar = new File(assetsDir, "programs.gram");
         recognizer.addGrammarSearch(MENU_SEARCH, menuGrammar);
 
         // Create grammar-based search for digit recognition

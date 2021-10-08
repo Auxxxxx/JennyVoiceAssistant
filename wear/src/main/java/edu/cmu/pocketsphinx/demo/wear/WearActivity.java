@@ -2,11 +2,13 @@ package edu.cmu.pocketsphinx.demo.wear;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,14 +28,11 @@ public class WearActivity extends Activity implements
         RecognitionListener {
 
     /* Named searches allow to quickly reconfigure the decoder */
-    private static final String KWS_SEARCH = "проснуться";
-    private static final String FORECAST_SEARCH = "словарь";
-    private static final String DIGITS_SEARCH = "цифры";
-    private static final String PHONE_SEARCH = "звуки";
-    private static final String MENU_SEARCH = "меню";
+    private static final String KWS_SEARCH = "поиск";
 
     /* Keyword we are looking for to activate menu */
     private static final String KEYPHRASE = "включи программу";
+    private static final String PROGRAMS_SEARCH = "программы";
 
     /* Used to handle permission request */
     private static final int PERMISSIONS_REQUEST_RECORD_AUDIO = 1;
@@ -46,12 +45,13 @@ public class WearActivity extends Activity implements
         super.onCreate(state);
 
         // Prepare the data for UI
-        captions = new HashMap<String, Integer>();
-        captions.put(KWS_SEARCH, R.string.kws_caption);
+        /*captions = new HashMap<String, Integer>();
+        captions.put(KWS_SEARCH_NAVIGATOR, R.string.kws_caption);
+        captions.put(KWS_SEARCH_NAVIGATOR, R.string.kws_caption);
         captions.put(MENU_SEARCH, R.string.menu_caption);
         captions.put(DIGITS_SEARCH, R.string.digits_caption);
         captions.put(PHONE_SEARCH, R.string.phone_caption);
-        captions.put(FORECAST_SEARCH, R.string.forecast_caption);
+        captions.put(FORECAST_SEARCH, R.string.forecast_caption);*/
         setContentView(R.layout.activity_main);
         ((TextView) findViewById(edu.cmu.pocketsphinx.demo.wear.R.id.caption_text))
                 .setText("Preparing the recognizer");
@@ -128,16 +128,10 @@ public class WearActivity extends Activity implements
             return;
 
         String text = hypothesis.getHypstr();
-        if (text.equals(KEYPHRASE))
-            switchSearch(MENU_SEARCH);
-        else if (text.equals(DIGITS_SEARCH))
-            switchSearch(DIGITS_SEARCH);
-        else if (text.equals(PHONE_SEARCH))
-            switchSearch(PHONE_SEARCH);
-        else if (text.equals(FORECAST_SEARCH))
-            switchSearch(FORECAST_SEARCH);
-        else
-            ((TextView) findViewById(R.id.result_text)).setText(text);
+        if (text.equals(KEYPHRASE)) {
+            switchSearch(PROGRAMS_SEARCH);
+        }
+        ((TextView) findViewById(R.id.result_text)).setText(text);
     }
 
     /**
@@ -149,6 +143,24 @@ public class WearActivity extends Activity implements
         if (hypothesis != null) {
             String text = hypothesis.getHypstr();
             makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
+            if (text.equals("навигатор")) {
+                try {
+                    Intent intent = getPackageManager().getLaunchIntentForPackage("ru.yandex.yandexnavi");
+                    startActivity(intent);
+                } catch (NullPointerException e) {
+                    Toast.makeText(getApplicationContext(), "Названная программа неопознана", Toast.LENGTH_SHORT).show();
+                    Log.e("NoProgramException", e.getMessage());
+                }
+            } else if (text.equals("панель")) {
+                try {
+                    Intent intent = getPackageManager().getLaunchIntentForPackage("afdf.asdf.eeff");
+                    startActivity(intent);
+                } catch (NullPointerException e) {
+                    Toast.makeText(getApplicationContext(), "Названная программа неопознана", Toast.LENGTH_SHORT).show();
+                    Log.e("NoProgramException", e.getMessage());
+                }
+            }
+            switchSearch(KWS_SEARCH);
         }
     }
 
@@ -173,9 +185,6 @@ public class WearActivity extends Activity implements
             recognizer.startListening(searchName);
         else
             recognizer.startListening(searchName, 10000);
-
-        String caption = getResources().getString(captions.get(searchName));
-        ((TextView) findViewById(R.id.caption_text)).setText(caption);
     }
 
     private void setupRecognizer(File assetsDir) throws IOException {
@@ -199,12 +208,12 @@ public class WearActivity extends Activity implements
         recognizer.addKeyphraseSearch(KWS_SEARCH, KEYPHRASE);
 
         // Create grammar-based search for selection between demos
-        File menuGrammar = new File(assetsDir, "menu.gram");
-        recognizer.addGrammarSearch(MENU_SEARCH, menuGrammar);
-
+        File programsGrammar = new File(assetsDir, "programs.gram");
+        recognizer.addGrammarSearch(PROGRAMS_SEARCH, programsGrammar);
+/*
         // Create grammar-based search for digit recognition
         File digitsGrammar = new File(assetsDir, "digits.gram");
-        recognizer.addGrammarSearch(DIGITS_SEARCH, digitsGrammar);
+        recognizer.addGrammarSearch(DIGITS_SEARCH, digitsGrammar);*/
 
         /*// Create language model search
         File languageModel = new File(assetsDir, "ru.lm");
