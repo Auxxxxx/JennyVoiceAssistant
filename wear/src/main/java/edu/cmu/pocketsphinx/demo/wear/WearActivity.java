@@ -2,6 +2,7 @@ package edu.cmu.pocketsphinx.demo.wear;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
@@ -31,7 +32,7 @@ public class WearActivity extends Activity implements
     private static final String KWS_SEARCH = "поиск";
 
     /* Keyword we are looking for to activate menu */
-    private static final String KEYPHRASE = "включи программу";
+    private static final String KEYPHRASE = "включи приложение";
     private static final String PROGRAMS_SEARCH = "программы";
 
     /* Used to handle permission request */
@@ -39,6 +40,8 @@ public class WearActivity extends Activity implements
 
     private SpeechRecognizer recognizer;
     private HashMap<String, Integer> captions;
+
+    private ProgressDialog dialog;
 
     @Override
     public void onCreate(Bundle state) {
@@ -53,8 +56,14 @@ public class WearActivity extends Activity implements
         captions.put(PHONE_SEARCH, R.string.phone_caption);
         captions.put(FORECAST_SEARCH, R.string.forecast_caption);*/
         setContentView(R.layout.activity_main);
-        ((TextView) findViewById(edu.cmu.pocketsphinx.demo.wear.R.id.caption_text))
-                .setText("Preparing the recognizer");
+
+        if (getActionBar() != null)
+            this.getActionBar().hide();
+
+        dialog = ProgressDialog.show(this, "",
+                "Настраиваем распознавание речи...", true);
+        ((TextView) findViewById(R.id.main_instr_nav)).setText(getResources().getText(R.string.instruction_navigator));
+        ((TextView) findViewById(R.id.main_instr_panel)).setText(getResources().getText(R.string.instruction_panel));
 
         // Check if user has given permission to record audio
         int permissionCheck = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.RECORD_AUDIO);
@@ -75,6 +84,7 @@ public class WearActivity extends Activity implements
                     Assets assets = new Assets(WearActivity.this);
                     File assetDir = assets.syncAssets();
                     setupRecognizer(assetDir);
+                    dialog.dismiss();
                 } catch (IOException e) {
                     return e;
                 }
@@ -84,8 +94,7 @@ public class WearActivity extends Activity implements
             @Override
             protected void onPostExecute(Exception result) {
                 if (result != null) {
-                    ((TextView) findViewById(R.id.caption_text))
-                            .setText("Failed to init recognizer " + result);
+                    Toast.makeText(getApplicationContext(), "Не удалось настроить распознавание речи", Toast.LENGTH_LONG).show();
                 } else {
                     switchSearch(KWS_SEARCH);
                 }
@@ -131,7 +140,6 @@ public class WearActivity extends Activity implements
         if (text.equals(KEYPHRASE)) {
             switchSearch(PROGRAMS_SEARCH);
         }
-        ((TextView) findViewById(R.id.result_text)).setText(text);
     }
 
     /**
@@ -139,10 +147,10 @@ public class WearActivity extends Activity implements
      */
     @Override
     public void onResult(Hypothesis hypothesis) {
-        ((TextView) findViewById(R.id.result_text)).setText("");
         if (hypothesis != null) {
             String text = hypothesis.getHypstr();
-            makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
+
+            Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
             if (text.equals("навигатор")) {
                 try {
                     Intent intent = getPackageManager().getLaunchIntentForPackage("ru.yandex.yandexnavi");
@@ -151,6 +159,7 @@ public class WearActivity extends Activity implements
                     Toast.makeText(getApplicationContext(), "Названная программа неопознана", Toast.LENGTH_SHORT).show();
                     Log.e("NoProgramException", e.getMessage());
                 }
+                switchSearch(KWS_SEARCH);
             } else if (text.equals("панель")) {
                 try {
                     Intent intent = getPackageManager().getLaunchIntentForPackage("afdf.asdf.eeff");
@@ -159,8 +168,8 @@ public class WearActivity extends Activity implements
                     Toast.makeText(getApplicationContext(), "Названная программа неопознана", Toast.LENGTH_SHORT).show();
                     Log.e("NoProgramException", e.getMessage());
                 }
+                switchSearch(KWS_SEARCH);
             }
-            switchSearch(KWS_SEARCH);
         }
     }
 
@@ -226,7 +235,7 @@ public class WearActivity extends Activity implements
 
     @Override
     public void onError(Exception error) {
-        ((TextView) findViewById(R.id.caption_text)).setText(error.getMessage());
+        Toast.makeText(getApplicationContext(), "Произошла ошибка", Toast.LENGTH_LONG).show();
     }
 
     @Override
