@@ -24,7 +24,8 @@
                 android:layout_marginStart="30dp"
                 android:typeface="sans"
                 android:textSize="20sp"
-                android:textStyle="bold"/>
+                android:textStyle="bold"
+                android:text="@string/instruction_navigator"/>
 
             <TextView
                 android:id="@+id/main_instr_panel"
@@ -35,7 +36,8 @@
                 android:layout_marginStart="30dp"
                 android:typeface="sans"
                 android:textSize="20sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:text="@string/instruction_panel"/>
         </LinearLayout>
     </FrameLayout>
 </android.support.wearable.view.BoxInsetLayout>

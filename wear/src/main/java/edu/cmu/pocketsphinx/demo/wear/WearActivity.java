@@ -162,7 +162,7 @@ public class WearActivity extends Activity implements
                 switchSearch(KWS_SEARCH);
             } else if (text.equals("панель")) {
                 try {
-                    Intent intent = getPackageManager().getLaunchIntentForPackage("afdf.asdf.eeff");
+                    Intent intent = getPackageManager().getLaunchIntentForPackage("com.TunAvto.vision.apk");
                     startActivity(intent);
                 } catch (NullPointerException e) {
                     Toast.makeText(getApplicationContext(), "Названная программа неопознана", Toast.LENGTH_SHORT).show();
