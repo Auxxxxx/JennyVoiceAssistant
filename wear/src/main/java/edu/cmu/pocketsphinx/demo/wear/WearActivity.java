@@ -204,7 +204,7 @@ public class WearActivity extends Activity implements
                 .setAcousticModel(new File(assetsDir, "ru_ptm_4000"))
                 .setDictionary(new File(assetsDir, "ru.dic"))
 
-                .setRawLogDir(assetsDir) // To disable logging of raw audio comment out this call (takes a lot of space on the device)
+               // .setRawLogDir(assetsDir) // To disable logging of raw audio comment out this call (takes a lot of space on the device)
 
                 .getRecognizer();
         recognizer.addListener(this);
