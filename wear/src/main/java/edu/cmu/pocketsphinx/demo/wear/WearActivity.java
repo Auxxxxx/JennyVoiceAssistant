@@ -7,8 +7,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -162,7 +162,7 @@ public class WearActivity extends Activity implements
                 switchSearch(KWS_SEARCH);
             } else if (text.equals("панель")) {
                 try {
-                    Intent intent = getPackageManager().getLaunchIntentForPackage("com.TunAvto.vision.apk");
+                    Intent intent = getPackageManager().getLaunchIntentForPackage("com.TunAvto.vision");
                     startActivity(intent);
                 } catch (NullPointerException e) {
                     Toast.makeText(getApplicationContext(), "Названная программа неопознана", Toast.LENGTH_SHORT).show();
