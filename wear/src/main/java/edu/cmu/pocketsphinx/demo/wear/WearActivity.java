@@ -30,7 +30,7 @@ public class WearActivity extends Activity implements
 
     /* Named searches allow to quickly reconfigure the decoder */
     private static final String KWS_SEARCH = "поиск";
-
+ 
     /* Keyword we are looking for to activate menu */
     private static final String KEYPHRASE = "включи приложение";
     private static final String PROGRAMS_SEARCH = "программы";
