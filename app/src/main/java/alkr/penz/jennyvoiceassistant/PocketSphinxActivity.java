@@ -28,43 +28,36 @@ import edu.cmu.pocketsphinx.SpeechRecognizerSetup;
 
 import static android.widget.Toast.makeText;
 
-public class PocketSphinxActivity extends Activity implements
-        RecognitionListener {
+public class PocketSphinxActivity extends Activity {
 
-    /* Named searches allow to quickly reconfigure the decoder */
+    /* Named searches allow to quickly reconfigure the decoder *//*
     private static final String KWS_SEARCH = "поиск";
 
-    /* Keyword we are looking for to activate menu */
+    *//* Keyword we are looking for to activate menu *//*
     private static final String KEYPHRASE = "включи приложение";
-    private static final String PROGRAMS_SEARCH = "программы";
+    private static final String PROGRAMS_SEARCH = "программы";*/
 
     /* Used to handle permission request */
     private static final int PERMISSIONS_REQUEST_RECORD_AUDIO = 1;
 
-    private SpeechRecognizer recognizer;
+    /*private SpeechRecognizer recognizer;
     private HashMap<String, Integer> captions;
 
-    private ProgressDialog dialog;
+    private ProgressDialog dialog;*/
 
     @Override
     public void onCreate(Bundle state) {
         super.onCreate(state);
 
-        // Prepare the data for UI
-        /*captions = new HashMap<String, Integer>();
-        captions.put(KWS_SEARCH_NAVIGATOR, R.string.kws_caption);
-        captions.put(KWS_SEARCH_NAVIGATOR, R.string.kws_caption);
-        captions.put(MENU_SEARCH, R.string.menu_caption);
-        captions.put(DIGITS_SEARCH, R.string.digits_caption);
-        captions.put(PHONE_SEARCH, R.string.phone_caption);
-        captions.put(FORECAST_SEARCH, R.string.forecast_caption);*/
-        setContentView(R.layout.activity_main);
+        /*setContentView(R.layout.activity_main);
 
         if (getActionBar() != null)
             this.getActionBar().hide();
 
         dialog = ProgressDialog.show(this, "",
                 "Настраиваем распознавание речи...", true);
+        ((TextView) findViewById(R.id.main_instr_nav)).setText(getResources().getText(R.string.instruction_navigator));
+        ((TextView) findViewById(R.id.main_instr_panel)).setText(getResources().getText(R.string.instruction_panel));*/
 
         // Check if user has given permission to record audio
         int permissionCheck = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.RECORD_AUDIO);
@@ -72,10 +65,12 @@ public class PocketSphinxActivity extends Activity implements
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, PERMISSIONS_REQUEST_RECORD_AUDIO);
             return;
         }
-        runRecognizerSetup();
+        startService(new Intent(PocketSphinxActivity.this, PocketSphinxService.class));
+        finish();
+        //runRecognizerSetup();
     }
 
-    private void runRecognizerSetup() {
+    /*private void runRecognizerSetup() {
         // Recognizer initialization is a time-consuming and it involves IO,
         // so we execute it in async task
         new AsyncTask<Void, Void, Exception>() {
@@ -101,9 +96,9 @@ public class PocketSphinxActivity extends Activity implements
                 }
             }
         }.execute();
-    }
+    }*/
 
-    @Override
+    /*@Override
     public void onRequestPermissionsResult(int requestCode,
                                            String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -115,24 +110,25 @@ public class PocketSphinxActivity extends Activity implements
                 finish();
             }
         }
-    }
+    }*/
 
-    @Override
+    /*@Override
     public void onDestroy() {
         super.onDestroy();
+        Toast.makeText(getApplicationContext(), "onDestroy", Toast.LENGTH_LONG).show();
 
         if (recognizer != null) {
             recognizer.cancel();
             recognizer.shutdown();
         }
-    }
+    }*/
 
     /**
      * In partial result we get quick updates about current hypothesis. In
      * keyword spotting mode we can react here, in other modes we need to wait
      * for final result in onResult.
      */
-    @Override
+    /*@Override
     public void onPartialResult(Hypothesis hypothesis) {
         if (hypothesis == null)
             return;
@@ -141,12 +137,12 @@ public class PocketSphinxActivity extends Activity implements
         if (text.equals(KEYPHRASE)) {
             switchSearch(PROGRAMS_SEARCH);
         }
-    }
+    }*/
 
     /**
      * This callback is called when we stop the recognizer.
      */
-    @Override
+    /*@Override
     public void onResult(Hypothesis hypothesis) {
         if (hypothesis != null) {
             String text = hypothesis.getHypstr();
@@ -172,22 +168,22 @@ public class PocketSphinxActivity extends Activity implements
                 switchSearch(KWS_SEARCH);
             }
         }
-    }
+    }*/
 
-    @Override
+    /*@Override
     public void onBeginningOfSpeech() {
-    }
+    }*/
 
     /**
      * We stop recognizer here to get a final result
      */
-    @Override
+    /*@Override
     public void onEndOfSpeech() {
         if (!recognizer.getSearchName().equals(KWS_SEARCH))
             switchSearch(KWS_SEARCH);
-    }
+    }*/
 
-    private void switchSearch(String searchName) {
+    /*private void switchSearch(String searchName) {
         recognizer.stop();
 
         // If we are not spotting, start listening with timeout (10000 ms or 10 seconds).
@@ -195,9 +191,9 @@ public class PocketSphinxActivity extends Activity implements
             recognizer.startListening(searchName);
         else
             recognizer.startListening(searchName, 10000);
-    }
+    }*/
 
-    private void setupRecognizer(File assetsDir) throws IOException {
+    /*private void setupRecognizer(File assetsDir) throws IOException {
         // The recognizer can be configured to perform multiple searches
         // of different kind and switch between them
 
@@ -210,9 +206,9 @@ public class PocketSphinxActivity extends Activity implements
                 .getRecognizer();
         recognizer.addListener(this);
 
-        /** In your application you might not need to add all those searches.
+        *//** In your application you might not need to add all those searches.
          * They are added here for demonstration. You can leave just one.
-         */
+         *//*
 
         // Create keyword-activation search.
         recognizer.addKeyphraseSearch(KWS_SEARCH, KEYPHRASE);
@@ -220,21 +216,9 @@ public class PocketSphinxActivity extends Activity implements
         // Create grammar-based search for selection between demos
         File programsGrammar = new File(assetsDir, "programs.gram");
         recognizer.addGrammarSearch(PROGRAMS_SEARCH, programsGrammar);
-/*
-        // Create grammar-based search for digit recognition
-        File digitsGrammar = new File(assetsDir, "digits.gram");
-        recognizer.addGrammarSearch(DIGITS_SEARCH, digitsGrammar);*/
+    }*/
 
-        /*// Create language model search
-        File languageModel = new File(assetsDir, "ru.lm");
-        recognizer.addNgramSearch(FORECAST_SEARCH, languageModel);*/
-
-        /*// Phonetic search
-        File phoneticModel = new File(assetsDir, "en-phone.dmp");
-        recognizer.addAllphoneSearch(PHONE_SEARCH, phoneticModel);*/
-    }
-
-    @Override
+    /*@Override
     public void onError(Exception error) {
         Toast.makeText(getApplicationContext(), "Произошла ошибка", Toast.LENGTH_LONG).show();
     }
@@ -243,4 +227,16 @@ public class PocketSphinxActivity extends Activity implements
     public void onTimeout() {
         switchSearch(KWS_SEARCH);
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Toast.makeText(getApplicationContext(), "onPause", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Toast.makeText(getApplicationContext(), "onStop", Toast.LENGTH_LONG).show();
+    }*/
 }
