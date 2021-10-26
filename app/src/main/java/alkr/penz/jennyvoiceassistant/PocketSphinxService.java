@@ -52,6 +52,18 @@ public class PocketSphinxService extends Service implements RecognitionListener 
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        Intent notificationIntent = new Intent(this, PocketSphinxActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_ONE_SHOT);
+
+        Notification notification = new Notification.Builder(this, CHANNEL_ID)
+                .setContentTitle("title")
+                .setContentText("message")
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(false)
+                .build();
+
         NotificationChannel channel = new NotificationChannel(CHANNEL_ID, "Message", NotificationManager.IMPORTANCE_HIGH);
         channel.setShowBadge(true);
         channel.enableLights(true);
@@ -61,18 +73,7 @@ public class PocketSphinxService extends Service implements RecognitionListener 
         NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         manager.createNotificationChannel(channel);
 
-        Intent notificationIntent = new Intent(this, PocketSphinxActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_ONE_SHOT);
 
-        Notification notification = new Notification.Builder(this, CHANNEL_ID)
-                .setContentTitle("title")
-                .setContentText("message")
-                .setSmallIcon(R.drawable.icon)
-                .setContentIntent(pendingIntent)
-                .setAutoCancel(true)
-                .build();
 
 // Notification ID cannot be 0.
         startForeground(ONGOING_NOTIFICATION_ID, notification);

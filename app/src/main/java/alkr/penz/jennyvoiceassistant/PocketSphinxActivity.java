@@ -27,6 +27,7 @@ import edu.cmu.pocketsphinx.SpeechRecognizer;
 import edu.cmu.pocketsphinx.SpeechRecognizerSetup;
 
 import static android.widget.Toast.makeText;
+import com.rollbar.android.Rollbar;
 
 public class PocketSphinxActivity extends Activity {
 
@@ -45,11 +46,14 @@ public class PocketSphinxActivity extends Activity {
 
     private ProgressDialog dialog;*/
 
+
     @Override
     public void onCreate(Bundle state) {
         super.onCreate(state);
 
         setContentView(R.layout.activity_main);
+
+        Rollbar.init(this);
 
         if (getActionBar() != null)
             this.getActionBar().hide();
