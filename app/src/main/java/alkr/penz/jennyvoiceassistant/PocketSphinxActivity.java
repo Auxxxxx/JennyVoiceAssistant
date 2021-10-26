@@ -49,24 +49,25 @@ public class PocketSphinxActivity extends Activity {
     public void onCreate(Bundle state) {
         super.onCreate(state);
 
-        /*setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main);
 
         if (getActionBar() != null)
             this.getActionBar().hide();
-
-        dialog = ProgressDialog.show(this, "",
-                "Настраиваем распознавание речи...", true);
+ 
+        //dialog = ProgressDialog.show(this, "", "Настраиваем распознавание речи...", true);
         ((TextView) findViewById(R.id.main_instr_nav)).setText(getResources().getText(R.string.instruction_navigator));
-        ((TextView) findViewById(R.id.main_instr_panel)).setText(getResources().getText(R.string.instruction_panel));*/
+        ((TextView) findViewById(R.id.main_instr_panel)).setText(getResources().getText(R.string.instruction_panel));
 
         // Check if user has given permission to record audio
         int permissionCheck = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.RECORD_AUDIO);
         if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, PERMISSIONS_REQUEST_RECORD_AUDIO);
             return;
+        } else {
+            Intent intent = new Intent(PocketSphinxActivity.this, PocketSphinxService.class);
+            getApplicationContext().startForegroundService(intent);
         }
-        startService(new Intent(PocketSphinxActivity.this, PocketSphinxService.class));
-        finish();
+        //finish();
         //runRecognizerSetup();
     }
 

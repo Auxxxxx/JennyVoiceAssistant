@@ -4,6 +4,8 @@
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
 
     <application
         android:allowBackup="false"
@@ -20,6 +22,7 @@
 
         <service
             android:name=".PocketSphinxService"
+            android:foregroundServiceType="location|microphone"
             android:enabled="true"
             android:exported="true" >
         </service>
