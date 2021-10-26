@@ -13,6 +13,8 @@ import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.rollbar.android.Rollbar;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;

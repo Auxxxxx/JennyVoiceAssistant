@@ -16,4 +16,6 @@ dependencies {
     implementation project(':models')
     implementation 'com.google.android.support:wearable:2.1.0'
     compileOnly 'com.google.android.wearable:wearable:2.1.0'
+    implementation 'com.rollbar:rollbar-java:1.+'
+    implementation 'com.rollbar:rollbar-android:1.+@aar'
 }
