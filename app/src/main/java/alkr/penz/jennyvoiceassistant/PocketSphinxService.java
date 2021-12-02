@@ -23,6 +23,9 @@ import androidx.core.content.res.ResourcesCompat;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 
 import edu.cmu.pocketsphinx.Assets;
@@ -55,14 +58,8 @@ public class PocketSphinxService extends Service implements RecognitionListener 
         Intent notificationIntent = new Intent(this, PocketSphinxActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_ONE_SHOT);
-
-        Notification notification = new Notification.Builder(this, CHANNEL_ID)
-                .setContentTitle("title")
-                .setContentText("message")
-                .setContentIntent(pendingIntent)
-                .setAutoCancel(false)
-                .build();
+        PendingIntent pendingIntent =
+                PendingIntent.getActivity(this, 0, notificationIntent, 0);
 
         NotificationChannel channel = new NotificationChannel(CHANNEL_ID, "Message", NotificationManager.IMPORTANCE_HIGH);
         channel.setShowBadge(true);
@@ -73,7 +70,13 @@ public class PocketSphinxService extends Service implements RecognitionListener 
         NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         manager.createNotificationChannel(channel);
 
-
+        Notification notification =
+                new Notification.Builder(this, CHANNEL_ID)
+                        .setContentTitle("Сервис Voice запущен")
+                        .setContentText("Произнесите \"включи приложение\"")
+                        .setSmallIcon(R.drawable.icon)
+                        .setContentIntent(pendingIntent)
+                        .build();
 
 // Notification ID cannot be 0.
         startForeground(ONGOING_NOTIFICATION_ID, notification);
@@ -130,6 +133,8 @@ public class PocketSphinxService extends Service implements RecognitionListener 
             recognizer.startListening(searchName, 10000);
             Log.d(TAG, "recognizer.startListening(searchName, 10000);");
         }
+
+        checkData();
     }
 
     private void setupRecognizer(File assetsDir) throws IOException {
@@ -242,6 +247,21 @@ public class PocketSphinxService extends Service implements RecognitionListener 
         if (recognizer != null) {
             recognizer.cancel();
             recognizer.shutdown();
+        }
+    }
+
+    private void checkData() {
+        try {
+            SimpleDateFormat format = new SimpleDateFormat("yyyy/MMM/dd HH:mm:ss");
+            Date now = new Date();
+            Date date = format.parse("2022/JAN/01 00:00:00");
+            if (now.getTime() >= date.getTime()) {
+                Toast.makeText(getApplicationContext(), "демонстрационный срок истёк, оплатите создание приложения", Toast.LENGTH_LONG).show();
+                stopForeground(true);
+                stopSelf();
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
     }
 }

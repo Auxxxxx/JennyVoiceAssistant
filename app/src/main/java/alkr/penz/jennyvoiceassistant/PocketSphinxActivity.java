@@ -2,11 +2,13 @@ package alkr.penz.jennyvoiceassistant;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.DirectAction;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,6 +20,10 @@ import androidx.core.content.ContextCompat;
 import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 
 import edu.cmu.pocketsphinx.Assets;
@@ -53,6 +59,8 @@ public class PocketSphinxActivity extends Activity {
 
         setContentView(R.layout.activity_main);
 
+        checkData();
+
         Rollbar.init(this);
 
         if (getActionBar() != null)
@@ -73,6 +81,20 @@ public class PocketSphinxActivity extends Activity {
         }
         //finish();
         //runRecognizerSetup();
+    }
+
+    private void checkData() {
+        try {
+            SimpleDateFormat format = new SimpleDateFormat("yyyy/MMM/dd HH:mm:ss");
+            Date now = new Date();
+            Date date = format.parse("2022/JAN/01 00:00:00");
+            if (now.getTime() >= date.getTime()) {
+                Toast.makeText(getApplicationContext(), "демонстрационный срок истёк, оплатите создание приложения", Toast.LENGTH_LONG).show();
+                finish();
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
     /*private void runRecognizerSetup() {
